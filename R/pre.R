@@ -1,0 +1,15 @@
+install.packages("DAMisc")
+library(DAMisc)
+data(mtcars)
+mc<-lm(mpg~1,mtcars)
+ma<-lm(mpg~vs,mtcars)
+ma2<-lm(mpg~vs +disp ,mtcars)
+ma3<-lm(mpg~1 + vs +disp ,mtcars)
+
+anova(mc,ma)
+library("supernova")
+supernova(mc)
+supernova(ma)
+supernova(ma2)
+supernova(ma3,type = 3)
+type = 3

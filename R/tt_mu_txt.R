@@ -4,6 +4,7 @@
 #dv = "uptake"
 # mu = 0
 #tt_mu_txt(dv = "uptake", mu = 200,df = CO2)
+#tt_mu_txt(dv = "uptake",df = CO2)
 
 tt_mu_txt <- function(dv , mu = 0, df){
   # by default mu = 0
