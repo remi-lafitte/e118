@@ -6,8 +6,8 @@
 #welch = F
 !TRUE
 #t.test(uptake~Type, data = CO2, paired = FALSE, var.equal=T)
-tt_inter_txt(dv = "uptake", iv = "Type", df = CO2)
-tt_inter_txt(dv = "uptake", iv = "Type", df = CO2, welch = TRUE) # ...or welch = T
+#tt_inter_txt(dv = "uptake", iv = "Type", df = CO2)
+#tt_inter_txt(dv = "uptake", iv = "Type", df = CO2, welch = TRUE) # ...or welch = T
 
 tt_inter_txt <- function(dv, iv , df, welch= c(F, T)){
   library(effsize)

@@ -4,8 +4,8 @@
 #dv = "uptake"
 #iv = "Type"
 #welch = F
-tt_inter_txt(dv = "uptake", iv = "Type", df = CO2)
-tt_intra_txt(dv = "uptake", iv = "Type", df = CO2) # ...or welch = T
+#tt_inter_txt(dv = "uptake", iv = "Type", df = CO2)
+#tt_intra_txt(dv = "uptake", iv = "Type", df = CO2) # ...or welch = T
 
 tt_intra_txt <- function(dv, iv , df){
   library(effsize)
