@@ -1,0 +1,16 @@
+Package: inline
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "Remi",
+           family = "Lafitte",
+           role = c("aut", "cre"),
+           email = "remi.lafitte@univ-grenoble-alpes.fr",
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: The package "inline" provides some simple functions suited to generate statistical outputs in APA format during the redaction of reproducible rmarkdown document.
+License: `use_mit_license()`, `use_gpl3_license()` or friends to
+    pick a license
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1

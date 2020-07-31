@@ -1,0 +1,56 @@
+# Example =
+#data(CO2)
+#df = CO2
+#dv = "uptake"
+#iv = "Type"
+#welch = F
+tt_inter_txt(dv = "uptake", iv = "Type", df = CO2)
+tt_inter_txt(dv = "uptake", iv = "Type", df = CO2, welch = TRUE) # ...or welch = T
+
+library(MBESS)
+tt_inter_txt <- function(dv, iv , df, welch= c(F, T)){
+
+  # if welch is forgotten, the default will be "FALSE", that is group variances are supposed equal.
+
+  fit<-as.formula(paste(dv, "~" ,iv))
+  # to enter fit object in t.test
+
+  ttest<-t.test(fit, data = df, var.equal = welch, paired = FALSE)
+  # t test
+
+  dof1<-table(df[,iv])[1]
+  dof2<-table(df[,iv])[2]
+  # degree of freedom
+
+  mean1<-tapply(df[,dv], df[,iv], mean)[1]
+  mean2<-tapply(df[,dv], df[,iv], mean)[2]
+  sd1<-tapply(df[,dv], df[,iv],sd)[1]
+  sd2<-tapply(df[,dv], df[,iv],sd)[2]
+  # mean and standard deviation
+
+  q<-round(ttest$statistic,2)# statistic q
+  dof<-round(ttest$parameter,2)# global degree of freedom
+  pv<-round(ttest$p.value,6)# raw p value. Beyond 10^-6, the round will give 0.
+  b<-round(ttest$estimate,2)# estimation of the beta slope.
+
+  #Now, we can calculate the Cohen's d (cd) effect size
+  #(see https://memory.psych.mun.ca/models/stats/effect_size.shtml) =
+
+  dof1_cd <- dof1 - 1
+  dof2_cd <- dof2 - 1
+  numerator  <- mean1 -  mean2
+  denominator <- sqrt(
+     ( (dof1_cd*(sd1^2)) + (dof2_cd*(sd2^2)) ) / (dof1_cd + dof2_cd)
+    )
+  cd  <- numerator/denominator
+  # cohen's d
+
+  cd_lower<-as.numeric(MBESS::ci.smd(smd=cd,n.1=dof1, n.2=dof2)[1])
+  cd_upper<-as.numeric(MBESS::ci.smd(smd=cd,n.1=dof1, n.2=dof2)[3])
+ # confidence interval thanks to the MBESS package
+
+  inline<-paste("*t*(",dof,")=",q,", *p*<",pv,", *d*=",round(cd,2),", 95% CI[",round(cd_lower,2),", ",
+                round(cd_upper,2),"]", sep = "")
+
+  return(inline)
+}
