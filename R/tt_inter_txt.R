@@ -4,18 +4,19 @@
 #dv = "uptake"
 #iv = "Type"
 #welch = F
+!TRUE
+#t.test(uptake~Type, data = CO2, paired = FALSE, var.equal=T)
 tt_inter_txt(dv = "uptake", iv = "Type", df = CO2)
 tt_inter_txt(dv = "uptake", iv = "Type", df = CO2, welch = TRUE) # ...or welch = T
 
-library(MBESS)
 tt_inter_txt <- function(dv, iv , df, welch= c(F, T)){
-
+  library(effsize)
   # if welch is forgotten, the default will be "FALSE", that is group variances are supposed equal.
 
   fit<-as.formula(paste(dv, "~" ,iv))
   # to enter fit object in t.test
 
-  ttest<-t.test(fit, data = df, var.equal = welch, paired = FALSE)
+  ttest<-t.test(fit, data = df, var.equal = !welch, paired = FALSE)
   # t test
 
   dof1<-table(df[,iv])[1]
@@ -45,12 +46,12 @@ tt_inter_txt <- function(dv, iv , df, welch= c(F, T)){
   cd  <- numerator/denominator
   # cohen's d
 
-  cd_lower<-as.numeric(MBESS::ci.smd(smd=cd,n.1=dof1, n.2=dof2)[1])
-  cd_upper<-as.numeric(MBESS::ci.smd(smd=cd,n.1=dof1, n.2=dof2)[3])
- # confidence interval thanks to the MBESS package
+  cd_ci<-effsize::cohen.d(df[, dv], f = df[, iv], conf.level = 0.95,
+                           hedges.correction = F)
+ # confidence interval thanks to the effsize package
 
-  inline<-paste("*t*(",dof,")=",q,", *p*<",pv,", *d*=",round(cd,2),", 95% CI[",round(cd_lower,2),", ",
-                round(cd_upper,2),"]", sep = "")
+  txt<-paste("*t*(",dof,")=",q,", *p*<",pv,", *d*=",round(cd,2),", 95% CI[",round(cd_ci$conf.int[1],2),", ",
+                round(cd_ci$conf.int[2],2),"]", sep = "")
 
-  return(inline)
+  return(txt)
 }
