@@ -47,4 +47,5 @@ tt_intra_txt <- function(dv, iv , df){
 
   return(inline)
 }
-
+d[43,"genre"]
+d$genre[43,]
