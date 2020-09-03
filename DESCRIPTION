@@ -7,9 +7,19 @@ Authors@R:
            role = c("aut", "cre"),
            email = "remi.lafitte@univ-grenoble-alpes.fr",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: The package "inline" provides some simple functions suited to generate statistical outputs in APA format during the redaction of reproducible rmarkdown document.
+Description: The package "inline" provides some simple functions suited to generate statistical 
+outputs in APA format during the redaction of reproducible rmarkdown document.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to
     pick a license
+    
+Imports:
+    dplyr
+    tidyr
+    afex
+    effectsize
+    magrittr
+    ggplot2
+    tibble
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
