@@ -7,17 +7,31 @@
 anova_txt(model_aov_4)
 }
 \arguments{
-\item{x}{A number}
-
-\item{y}{A number}
+\item{afex::aov_4}{object}
 }
 \value{
-The sum of \code{x} and \code{y}
+anova output with inline for rmarkdown
 }
 \description{
 Add together two numbers
 }
 \examples{
-add(1, 1)
-add(10, 1)
+**example 1**
+library(afex)
+library(magrittr)
+library(dplyr)
+library(tibble)
+library(tidyr)
+data(mtcars)
+data<-mtcars \%>\% mutate(ID = 1:nrow(.))
+model<-afex::aov_4(mpg~ vs * am + (1|ID), data) # between-subject design
+result<-anova_txt(model = model)
+result$anova$txt
+
+**example 2**
+data(mtcars)
+data<-mtcars \%>\% mutate(ID = rep(1:16, 2), intra = rep(c(0,1), each=16))
+model<-afex::aov_4(mpg~ 1 + (intra|ID), data) # within-subject design
+result<-anova_txt(model = model)
+result$anova$txt
 }

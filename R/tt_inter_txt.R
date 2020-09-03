@@ -13,7 +13,6 @@ tt_inter_txt <- function(dv, iv , df, welch= c(F, T)){
 
   fit<-as.formula(paste(dv, "~" ,iv))
   # to enter fit object in t.test
-
   ttest<-t.test(fit, data = df, var.equal = !welch, paired = FALSE)
   # t test
 

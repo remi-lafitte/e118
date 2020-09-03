@@ -1,5 +1,5 @@
 Package: e118
-Title: very beautiful plot + statistical output in text format for F and t tests !!! super-saving summer function of the year !!!
+Title: Statistical output in text format for F and t tests !!! super-saving summer function of the year !!!
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "R",
@@ -9,7 +9,7 @@ Authors@R:
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: non
 Imports:
-    dplyr, tibble, ggplot2, effectsize, afex, dplyr, magrittr
+    dplyr, tibble, ggplot2, effectsize, afex, dplyr, magrittr, rlang
 LazyData: true
 RoxygenNote: 7.1.1
 Encoding: UTF-8
