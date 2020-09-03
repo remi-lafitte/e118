@@ -8,8 +8,8 @@
 #' add(10, 1)
 
 tt_mu_txt <- function(dv , mu = 0, df){
-  # by default mu = 0
-  library(effsize)
+  # # by default mu = 0
+  # library(effsize)
 
   fit<-as.formula(paste(dv, "~" ,mu))
   # to enter fit object in t.test

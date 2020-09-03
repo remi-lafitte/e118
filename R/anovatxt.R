@@ -7,10 +7,10 @@
 #' add(1, 1)
 #' add(10, 1)
 anova_txt<- function(model_aov_4){
-    library(afex)
-    library(effectsize)
-    library(dplyr)
-    library(magrittr)
+    # library(afex)
+    # library(effectsize)
+    # library(dplyr)
+    # library(magrittr)
    pes<-
     effectsize::eta_squared(model, partial = TRUE, ci = 0.9) %>%
     data.frame %>%

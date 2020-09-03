@@ -8,7 +8,7 @@
 
 
 tt_inter_txt <- function(dv, iv , df, welch= c(F, T)){
-  library(effsize)
+  # library(effsize)
   # if welch is forgotten, the default will be "FALSE", that is group variances are supposed equal.
 
   fit<-as.formula(paste(dv, "~" ,iv))

@@ -8,7 +8,7 @@
 #' add(10, 1)
 
 tt_intra_txt <- function(dv, iv , df){
-  library(effsize)
+  # library(effsize)
 
   fit<-as.formula(paste(dv, "~" ,iv))
   # to enter fit object in t.test
