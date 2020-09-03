@@ -46,6 +46,5 @@ plot_two_interaction <- function(df, iv1, iv2,iv3, dv, continuous = c(F, T)){
 
   return(list(plot = plot_two_interaction , msd = msd_two_interaction))
 
-  return(list(msd = msd_two_interaction, plot = plot_two_interaction))
 
 }
