@@ -11,4 +11,4 @@ Description: non
 Imports:
     dplyr, tibble, ggplot2, effectsize, afex, dplyr, magrittr
 LazyData: F
-
+RoxygenNote: 7.1.1

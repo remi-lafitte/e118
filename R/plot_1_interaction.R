@@ -1,5 +1,5 @@
 #' Add together two numbers
-#'
+#' @export plot_1_interaction
 #' @param x A number
 #' @param y A number
 #' @return The sum of \code{x} and \code{y}
