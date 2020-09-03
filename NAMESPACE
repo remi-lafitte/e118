@@ -2,7 +2,7 @@
 
 export(anova_txt)
 export(plot_1_interaction)
-export(plot_2_itc)
+export(plot_2_interaction)
 export(plot_main)
 export(tt_inter_txt)
 export(tt_intra_txt)

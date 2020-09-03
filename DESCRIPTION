@@ -10,5 +10,6 @@ Authors@R:
 Description: non
 Imports:
     dplyr, tibble, ggplot2, effectsize, afex, dplyr, magrittr
-LazyData: F
+LazyData: true
 RoxygenNote: 7.1.1
+Encoding: UTF-8

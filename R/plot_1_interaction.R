@@ -7,7 +7,7 @@
 #' add(1, 1)
 #' add(10, 1)
 
-plot_interaction <- function(df, iv1, iv2, dv, continuous = c(F, T)){
+plot_1_interaction <- function(df, iv1, iv2, dv, continuous = c(F, T)){
   # by default all ariables are categorical
 
   iv1 <- enquo(iv1)
