@@ -1,11 +1,11 @@
-# Example =
-#data(CO2)
-#df = CO2
-#dv = "uptake"
-#iv = "Type"
-#welch = F
-#tt_inter_txt(dv = "uptake", iv = "Type", df = CO2)
-#tt_intra_txt(dv = "uptake", iv = "Type", df = CO2) # ...or welch = T
+#' Add together two numbers
+#'
+#' @param x A number
+#' @param y A number
+#' @return The sum of \code{x} and \code{y}
+#' @examples
+#' add(1, 1)
+#' add(10, 1)
 
 tt_intra_txt <- function(dv, iv , df){
   library(effsize)

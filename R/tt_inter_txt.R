@@ -1,13 +1,11 @@
-# Example =
-#data(CO2)
-#df = CO2
-#dv = "uptake"
-#iv = "Type"
-#welch = F
-!TRUE
-#t.test(uptake~Type, data = CO2, paired = FALSE, var.equal=T)
-#tt_inter_txt(dv = "uptake", iv = "Type", df = CO2)
-#tt_inter_txt(dv = "uptake", iv = "Type", df = CO2, welch = TRUE) # ...or welch = T
+#' Add together two numbers
+#'
+#' @param x A number
+#' @param y A number
+#' @return The sum of \code{x} and \code{y}
+#' @examples
+#' tt_inter_txt(dv = "uptake", iv = "Type", df = CO2, welch = TRUE) # ...or welch = T
+
 
 tt_inter_txt <- function(dv, iv , df, welch= c(F, T)){
   library(effsize)
