@@ -46,8 +46,7 @@ anova_txt<- function(model){ # enter afex (aov_4) object here
 }
 
 # txt<-anova_txt(anova_1)
-# txt$anova$txt
-#
+# txt$anova$txt[line,]
 #
 #
 # set.seed(42)
