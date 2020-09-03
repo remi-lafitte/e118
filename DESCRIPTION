@@ -1,5 +1,5 @@
-Package: lafitte
-Title: plot et resulat stat en texte
+Package: e118
+Title: very beautiful plot + statistical output in text format for F and t tests !!! super-saving summer function of the year !!!
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "R",
