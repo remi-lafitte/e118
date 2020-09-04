@@ -1,11 +1,10 @@
-#' Add together two numbers
 #' @export tt_inter_txt
-#' @param x A number
-#' @param y A number
-#' @return The sum of \code{x} and \code{y}
+#' @param dv
+#' @param iv
+#' @param df = data frame
+#' @return A text
 #' @examples
-#' add(1, 1)
-#' add(10, 1)
+
 
 tt_inter_txt <- function(dv, iv , df, welch= c(F, T)){
   # library(effsize)

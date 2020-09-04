@@ -11,16 +11,18 @@
 #'                 a2 = c(rnorm(100,2), rnorm(100,1),rnorm(100,0)),
 #'                 a3 = c(rnorm(100,2), rnorm(100,1),rnorm(100,0)))
 #'msd(df = z, iv = "b", dv = "a1")
+#'msd(df = z, dv = "a1")
 
 
-msd <- function(df, ivs, dv, ci = c(T,F)){
+msd <- function(df, ivs = "", dv){
 
   ivs<-syms(ivs)
 
   msd<-
     df %>%
+    select(!!!ivs, !!sym(dv)) %>%
     group_by(!!! ivs) %>%
-    summarise(mean = mean(!!sym(dv), na.rm = TRUE),
+    dplyr::summarise(mean = mean(!!sym(dv), na.rm = TRUE),
               sd = sd(!!sym(dv), na.rm = TRUE),
               lower.sd = mean - sd,
               upper.sd = mean + sd,
@@ -33,5 +35,6 @@ msd <- function(df, ivs, dv, ci = c(T,F)){
 
 
 
-  return(list(msd = msd))
+  return(msd)
 }
+
