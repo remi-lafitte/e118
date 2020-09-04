@@ -51,3 +51,4 @@ tt_inter_txt <- function(dv, iv , df, welch= c(F, T)){
 
   return(txt)
 }
+
