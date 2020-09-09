@@ -1,9 +1,10 @@
+
 #' @export anova_txt
 #' @param afex::aov_4 object
 #' @param effect = the effect of the model that you want to extract. if not filled, extract all the effects
 #' @return anova output with inline for rmarkdown
 #' @examples
-#'**example 1**
+#'example 1
 #'library(afex)
 #'library(magrittr)
 #'library(dplyr)
@@ -14,7 +15,7 @@
 #' model<-afex::aov_4(mpg~ vs * am + (1|ID), data) # between-subject design
 #' result<-anova_txt(model = model, effect = "vs")
 #' result$txt
-#' **example 2**
+#' example 2
 #' data(mtcars)
 #' data<-mtcars %>% mutate(ID = rep(1:16, 2), intra = rep(c(0,1), each=16))
 #' model<-afex::aov_4(mpg~ 1 + (intra|ID), data) # within-subject design

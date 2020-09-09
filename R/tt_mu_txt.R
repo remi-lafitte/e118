@@ -1,11 +1,12 @@
 #' @export tt_mu_txt
-#' @param dv
-#' @param iv
-#' @param df = data frame
-#' @return A text that summarises the one sample t-test
+#' @param tt_mu_txt(t.test object)
 #' @examples
-#' tt_mu_txt(dv = "mpg", df = mtcars)
-tt_mu_txt <- function(dv , mu = 0, df){
+#' data(mtcars)
+#' x<-t.test(mtcars$qsec , mu=  0)
+#' y<-tt_mu_txt(x)
+#' y
+tt_mu_txt <- function(model){
+
   p_txt<-function(p){
 
     a = 'p < '
@@ -33,30 +34,47 @@ tt_mu_txt <- function(dv , mu = 0, df){
   # # by default mu = 0
   # library(effsize)
 
-  fit<-as.formula(paste(dv, "~" ,mu))
-  # to enter fit object in t.test
+  # fit<-as.formula(paste(dv, "~" ,mu))
+  # # to enter fit object in t.test
 
-  ttest<-t.test(x = df[,dv],y=NULL, mu = mu, data = df)
+  ttest<-model
   # one sample t test
 
   q<-round(ttest$statistic,2)# statistic q
   dof<-round(ttest$parameter,2)# global degree of freedom
   pv<-p_txt(ttest$p.value)# raw p value. Beyond 10^-6, the round will give 0.
   b<-round(ttest$estimate,2)# estimation of the beta slope.
-  ci<-paste("95% CI [", round(ttest$conf.int[1],2),", ", round(ttest$conf.int[2],2),"]", sep = "")
+  # ci<-paste("95% CI [", round(ttest$conf.int[1],2),", ", round(ttest$conf.int[2],2),"]", sep = "")
 
-  cd  <- (mean(df[,dv])-mu)/sd(df[,dv])
+  # cd  <- (mean(df[,dv])-mu)/sd(df[,dv])
   # cohen's dz
 #   cd_ci<-effsize::cohen.d(df[, dv],f=NA, conf.level = 0.95,mu = mu,
 #                            hedges.correction = F)
 #   # confidence interval thanks to the effsize package
+  # ", *d*=",round(cd,2),
 
-  txt<-paste("*t*(",dof,")=",q,
-                ", ", ci,
-                ", ",pv,
-                ", *d*=",round(cd,2),
-                sep = "")
+  full<-
+    paste(
+    "$M = "
+    ,b,
+    "$, 95\\% CI $["
+    ,round(ttest$conf.int[1],2),
+    "$, $"
+    ,round(ttest$conf.int[2],2),
+    "]$, $t("
+    ,dof,
+    ") = "
+    ,q,
+    "$, $"
+    ,pv,
+    "$",
+    sep =""
+  )
 
-  return(txt)
+
+
+  return(list(txt = full))
 }
+
+
 
