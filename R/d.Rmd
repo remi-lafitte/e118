@@ -1,7 +1,0 @@
----
-title: "Untitled"
-output:
-  word_document: default
-  html_document: default
----
-`r  "$M = 20.09$, 95\\% CI $[17.92$, $22.26]$, $t(31) = 18.86$, $p < 10^-6$"`
