@@ -14,30 +14,6 @@
 #' tt_txt(z)
 #' tt_txt(z, beta = T)
 tt_txt <- function(model, beta = T){
-  p_txt<-function(p){
-
-    a = 'p < '
-    b = 'p = '
-    p <- ifelse(is.character(p), as.numeric(p), p)
-    p3 <- round(p, 3)
-
-
-    pv<-
-      ifelse(p < 0.000001,
-             "p < 10^-6",
-             ifelse(p < .00001,
-                    "p < 10^-5",
-                    ifelse(p < .0001,
-                           "p < 10^-4",
-                           ifelse(p < .001,
-                                  "p < 0.001",
-                                  ifelse(p < .05,
-                                         paste("*p* < ", p3, sep = ""),
-                                         paste("*p* = ", p3, sep = ""))))))
-
-    return(pv)
-  }
-
   ttest<-model
   # one sample t test
 
@@ -49,12 +25,12 @@ tt_txt <- function(model, beta = T){
 
   full<- paste(
     ifelse(isTRUE(beta),
-           paste("$M = ",b, "$, ", sep = ""), ""),
-   "95\\% CI $[",round(ttest$conf.int[1],2),"$, $",
-               round(ttest$conf.int[2],2),"]$, $t(",dof,") = ",q,"$, $",pv,"$",
+           paste("*M* = ",b, ", ", sep = ""), ""),
+   "95% CI [",round(ttest$conf.int[1],2),", ",
+               round(ttest$conf.int[2],2),"], *t*(",dof,") = ",q,", ",pv,
     sep ="")
 
-  small<- paste("$t(",dof,") = ",q,"$, $",pv,"$",
+  small<- paste("*t*(",dof,") = ",q,", ",pv,
                sep ="")
 
 

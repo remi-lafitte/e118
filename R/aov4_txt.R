@@ -1,5 +1,5 @@
 
-#' @export anova_txt
+#' @export aov4_txt
 #' @param afex::aov_4 object
 #' @param effect = the effect of the model that you want to extract. if not filled, extract all the effects
 #' @return anova output with inline for rmarkdown
@@ -8,10 +8,10 @@
 #'library(afex)
 #'library(magrittr)
 #'library(dplyr)
-#'library(tibble)
 #'library(tidyr)
 #' data(mtcars)
-#' data<-mtcars %>% mutate(ID = 1:nrow(.))
+#' data<-mtcars
+#' data$ID<-1:nrow(data)
 #' model<-afex::aov_4(mpg~ vs * am + (1|ID), data) # between-subject design
 #' result<-anova_txt(model = model, effect = "vs")
 #' result$txt
@@ -21,9 +21,9 @@
 #' model<-afex::aov_4(mpg~ 1 + (intra|ID), data) # within-subject design
 #' result<-anova_txt(model = model)
 #' result$anova$txt
+aov4_txt(model, effect = "vs")
 
-
-anova_txt<- function(model_aov_4, effect = txt$Parameter){
+aov4_txt<- function(model_aov_4, effect = txt$Parameter){
     # library(afex)
     # library(effectsize)
     # library(dplyr)
@@ -51,16 +51,16 @@ anova_txt<- function(model_aov_4, effect = txt$Parameter){
               den.Df,
               ") = ",
               F,
-              ", *p* < ",
-              Pr..F.,
-              ", ges = ",
-              ges,
-              ", pes = ",
-              Eta_Sq_partial,
-              ", 95% CI [",
-              CI_low,
               ", ",
-              CI_high,
+              p_txt(Pr..F.),
+              ", ges = ",
+              round(ges,2),
+              ", $\eta^{2}_p$ = ",
+              round(Eta_Sq_partial,2),
+              ", 95% CI [",
+              round(CI_low,2),
+              ", ",
+              round(CI_high,2),
               "]",
               sep = "")
 
@@ -73,3 +73,4 @@ anova_txt<- function(model_aov_4, effect = txt$Parameter){
      return(txt)
 }
 
+# https://csrgxtu.github.io/2015/03/20/Writing-Mathematic-Fomulars-in-Markdown/
