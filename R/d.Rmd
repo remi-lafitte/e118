@@ -1,6 +1,8 @@
 ---
 title: "Untitled"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 `r "*r*~s~= 0.26, *p* = 0.47"`
 
@@ -20,7 +22,15 @@ output: html_document
 *F*(1, 28) = 31.73, *p* < 10^-6^, ges = 0.53, pes = 0.531, 95% CI [0.309, 0.676]
 
 $\Gamma$
-
+$\\hat{\\eta}^2_p$
 $\eta^{2}_p$
 
-$G^{2}_p$
+$\eta^{2}_G$
+
+$\eta^{2}_G$
+
+library(papaja)
+apa_print(model)
+
+
+`r "*F*(2, 294) = 107.45, *p* < 10^-6^, $\\hat{\\eta}^2_G$ = 0.42, $\\hat{\\eta}^2_p$ = 0.42, 95% CI [0.35, 0.48]"`

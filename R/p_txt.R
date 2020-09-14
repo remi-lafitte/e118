@@ -25,4 +25,4 @@ p_txt<-function(p){
 
   return(pv)
 }
-p_txt(0.00006)
+# p_txt(0.00006)

@@ -9,25 +9,20 @@
 #'library(magrittr)
 #'library(dplyr)
 #'library(tidyr)
-#' data(mtcars)
-#' data<-mtcars
-#' data$ID<-1:nrow(data)
-#' model<-afex::aov_4(mpg~ vs * am + (1|ID), data) # between-subject design
-#' result<-anova_txt(model = model, effect = "vs")
+#' set.seed(42)
+#' z <- data.frame(a1 = c(rnorm(100,2), rnorm(100,1),rnorm(100,0)),
+#'                 b  = rep(c("A", "B", "C"), each = 100),
+#'                 c  = factor(rbinom(300, 1, .5)),
+#'                 ID = 1:300,
+#'                 a2 = c(rnorm(100,2), rnorm(100,1),rnorm(100,0)),
+#'                 a3 = c(rnorm(100,2), rnorm(100,1),rnorm(100,0)))
+#' model<-afex::aov_4(a1~ b * c + (1|ID),z) # between-subject design
+#' result<-aov4_txt(model = model, effect = "b")
 #' result$txt
-#' example 2
-#' data(mtcars)
-#' data<-mtcars %>% mutate(ID = rep(1:16, 2), intra = rep(c(0,1), each=16))
-#' model<-afex::aov_4(mpg~ 1 + (intra|ID), data) # within-subject design
-#' result<-anova_txt(model = model)
-#' result$anova$txt
-aov4_txt(model, effect = "vs")
 
-aov4_txt<- function(model_aov_4, effect = txt$Parameter){
-    # library(afex)
-    # library(effectsize)
-    # library(dplyr)
-    # library(magrittr)
+x<-aov4_txt(model)
+x$b$full
+aov4_txt<- function(model){
 
    pes<-
     effectsize::eta_squared(model, partial = TRUE, ci = 0.9) %>%
@@ -43,34 +38,23 @@ aov4_txt<- function(model_aov_4, effect = txt$Parameter){
       inner_join(., pes, by = "Parameter")
 
 
-     txt<- table %>%
-      mutate(
-        txt= paste("*F*(",
-              num.Df,
-              ", ",
-              den.Df,
-              ") = ",
-              F,
-              ", ",
-              p_txt(Pr..F.),
-              ", ges = ",
-              round(ges,2),
-              ", $\eta^{2}_p$ = ",
-              round(Eta_Sq_partial,2),
-              ", 95% CI [",
-              round(CI_low,2),
-              ", ",
-              round(CI_high,2),
-              "]",
-              sep = "")
+    txt<-
+       table %>%
+      mutate(p = p_txt(Pr..F.)) %>%
+      mutate(F = paste("*F*(",num.Df, ", ",den.Df,") = ",F, sep = "")) %>%
+      mutate(ges = paste("$\\hat{\\eta}^2_G$ = ",round(ges,2))) %>%
+      mutate(pes = paste("$\\hat{\\eta}^2_p$ = ",round(Eta_Sq_partial,2))) %>%
+      mutate(pes_ci =  paste("95% CI [",round(CI_low,2),", ",round(CI_high,2),"]", sep = "")) %>%
+      mutate(pes_full =  paste(pes,", ", pes_ci, sep = "")) %>%
+      mutate(full= paste(F,", ",p,", ", ges,", ", pes,", ", pes_ci, sep = "")) %>%
+      mutate(small= paste(F,", ",p, sep = ""))
 
-      )
+    rownames(txt)<- txt$Parameter
 
+    list <- setNames(split(txt, seq(nrow(txt))), rownames(txt))
 
-
-     txt<-txt[txt$Parameter == effect,]
-
-     return(txt)
+ # txt<-txt[txt$Parameter == effect,]
+return(list)
 }
 
 # https://csrgxtu.github.io/2015/03/20/Writing-Mathematic-Fomulars-in-Markdown/
