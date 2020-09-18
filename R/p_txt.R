@@ -2,6 +2,7 @@
 #' @param
 #' A p value
 #' @examples
+#' p_txt(0.0006)
 p_txt<-function(p){
 
   a = 'p < '

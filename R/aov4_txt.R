@@ -1,7 +1,6 @@
 
 #' @export aov4_txt
 #' @param afex::aov_4 object
-#' @param effect = the effect of the model that you want to extract. if not filled, extract all the effects
 #' @return anova output with inline for rmarkdown
 #' @examples
 #'example 1
@@ -17,11 +16,12 @@
 #'                 a2 = c(rnorm(100,2), rnorm(100,1),rnorm(100,0)),
 #'                 a3 = c(rnorm(100,2), rnorm(100,1),rnorm(100,0)))
 #' model<-afex::aov_4(a1~ b * c + (1|ID),z) # between-subject design
-#' result<-aov4_txt(model = model, effect = "b")
-#' result$txt
+#' result<-aov4_txt(model = model)
+#' result$c$full
+emmeans(model, ~ b * c)
+model$lm$coefficients
+View(model)
 
-x<-aov4_txt(model)
-x$b$full
 aov4_txt<- function(model){
 
    pes<-
@@ -40,6 +40,7 @@ aov4_txt<- function(model){
 
     txt<-
        table %>%
+      dplyr::group_by(Parameter) %>%
       mutate(p = p_txt(Pr..F.)) %>%
       mutate(F = paste("*F*(",num.Df, ", ",den.Df,") = ",F, sep = "")) %>%
       mutate(ges = paste("$\\hat{\\eta}^2_G$ = ",round(ges,2))) %>%
