@@ -1,0 +1,20 @@
+ttest_report<-function(data = mtcars,
+                       model = t.test(mpg ~  vs,mtcars),
+                       output = "html",
+                       open = F){
+  rmarkdown::render("ttest.Rmd", output_format = paste0(output, "_document"))
+  if(open == T){
+    browseURL(here::here(paste0("ttest.", output)))
+  }
+  if(open == T & output == "word"){
+    system2("open","ttest.docx")
+  }
+}
+
+ttest_report(output = "word", open =T) # open = T don't work with word output
+# library(officer)
+# c<-read_docx(here::here("ttest.docx"))
+# docx_summary(c)
+# https://theautomatic.net/2020/07/21/how-to-read-and-create-word-documents-in-r/
+
+

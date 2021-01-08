@@ -1,0 +1,73 @@
+---
+title: "T-test"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, results = T, message = F, warning = F)
+source(here::here("R", "function.R"))
+library(plyr)
+data("mtcars")
+```
+
+```{r, include=F}
+d<-data # the first unknown parameter
+x<- model # the second unknown parameter
+```
+
+# R output
+```{r, comment=""}
+x
+```
+
+# Text
+
+`r tt_txt(x)$full`
+
+# Diagnostic
+## Dependent variable distribution
+
+```{r, comment='', fig.width=8, fig.height=4}
+dv<-strsplit(x$data.name, split = " by ")[[1]][1] # dependent variable
+iv<-strsplit(x$data.name, split = " by ")[[1]][2] # independent variable
+y<-as.data.frame(d[,dv])
+colnames(y)<-dv
+par(mfrow = c(1,2))
+shape(y) # histogramm and qqplot
+measure<-d[,dv]
+shapiro.test(measure)
+# a<-paste0(deparse(substitute(d)),"$", dv)
+# w<-eval(parse(text = a))
+```
+
+## Dependent variable distribution by group
+```{r,comment='', fig.width=8, fig.height=4}
+d$iv<-as.factor(d[,iv])
+par(mfrow = c(2,2))
+for(i in levels(d$iv)){
+  sub_df<-as.data.frame(d[d$iv == i , dv])
+  colnames(sub_df)<-paste0(iv,"=",i)
+  shape(data = sub_df)
+  print(shapiro.test(d[d$iv == i , dv]))
+  }
+```
+
+## Variances and Variance ratio
+```{r}
+round(tapply(d[,dv], d[,iv], var),2)
+round(max(tapply(d[,dv], d[,iv], var)) / min(tapply(d[,dv], d[,iv], var)),2)
+```
+## Test of heteroscedasticity
+```{r, comment=""}
+formula <- as.formula(paste(dv, iv, sep = "~"))
+stats::fligner.test(formula, d)
+```
+## Means
+```{r}
+round(tapply(d[,dv], d[,iv], mean),2)
+```
+## SD
+```{r}
+round(tapply(d[,dv], d[,iv], sd),2)
+```
+

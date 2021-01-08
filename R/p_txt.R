@@ -19,10 +19,12 @@ p_txt<-function(p){
                   ifelse(p < .0001,
                          "*p* < 10^-4^",
                          ifelse(p < .001,
-                                "*p* < 0.001",
+                                "*p* < .001",
+                                ifelse(p < .01,
+                                       "*p* < .01",
                                 ifelse(p < .05,
                                        paste("*p* < ", p3, sep = ""),
-                                       paste("*p* = ", p3, sep = ""))))))
+                                       paste("*p* = ", p3, sep = "")))))))
 
   return(pv)
 }
