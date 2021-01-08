@@ -3,7 +3,7 @@ output: html_document
 ---
 # T-test
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = F, results = T, message = F, warning = F)
+knitr::opts_chunk$set(echo = F, results = T, message = F, warning = F, comment = "")
 source(here::here("R", "function.R"))
 library(plyr)
 data("mtcars")

@@ -13,11 +13,12 @@ ttest_report<-function(data = mtcars,
     browseURL(here::here(paste0("t-test.", output)))
   }
   if(open == T & output == "word"){
-    system2("open","ttest.docx")
+    system2("open","t-test.docx")
   }
 }
 
-ttest_report(output = "html", open =T) # open = T don't work with word output
+
+ttest_report(output = "word", open =T) # open = T don't work with word output
 # library(officer)
 # c<-read_docx(here::here("ttest.docx"))
 # docx_summary(c)
