@@ -1,8 +1,7 @@
 ---
-title: "T-test"
 output: html_document
 ---
-
+# T-test
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = F, results = T, message = F, warning = F)
 source(here::here("R", "function.R"))
