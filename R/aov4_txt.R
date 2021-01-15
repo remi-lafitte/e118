@@ -48,14 +48,19 @@ aov4_txt<- function(model){
       mutate(pes_ci =  paste("95% CI [",round(CI_low,2),", ",round(CI_high,2),"]", sep = "")) %>%
       mutate(pes_full =  paste(pes,", ", pes_ci, sep = "")) %>%
       mutate(full= paste(F,", ",p,", ", ges,", ", pes,", ", pes_ci, sep = "")) %>%
+      mutate(html= paste(F,", ",p,", ", ges,", ", pes,", ", pes_ci,"<br/><br/>", sep = "")) %>%
+      mutate(docx= paste(F,", ",p,", ", ges,", ", pes,", ", pes_ci,"\\", sep = "")) %>%
       mutate(small= paste(F,", ",p, sep = ""))
-
-    rownames(txt)<- txt$Parameter
-
-    list <- setNames(split(txt, seq(nrow(txt))), rownames(txt))
-
+#
+#     rownames(txt)<- txt$Parameter
+#
+#     list <- setNames(split(txt, seq(nrow(txt))), rownames(txt))
  # txt<-txt[txt$Parameter == effect,]
-return(list)
+w<-paste0(t(as.matrix(txt$html)))
+html<-paste(w,collapse="")
+w<-paste0(t(as.matrix(txt$docx)))
+docx<-paste(w,collapse=" ")
+return(list(full =txt$full, txt  = txt, html = html, docx = docx))
 }
 
 # https://csrgxtu.github.io/2015/03/20/Writing-Mathematic-Fomulars-in-Markdown/

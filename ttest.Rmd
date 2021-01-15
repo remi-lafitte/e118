@@ -12,11 +12,22 @@ data("mtcars")
 ```{r, include=F}
 d<-data # the first unknown parameter
 x<- model # the second unknown parameter
+show_text <- grepl("Two",x$method, fixed =F)
 ```
 
 # R output
 ```{r, comment=""}
 x
+dv<-strsplit(x$data.name, split = " by ")[[1]][1] # dependent variable
+iv<-strsplit(x$data.name, split = " by ")[[1]][2] # independent variable
+```
+
+```{r eval = show_text, comment=""}
+means<-setNames(aggregate(d[,dv], by = list(d[,iv]),FUN = function(x) c(Mean = round(mean(x),2),
+                                                        SD = round(sd(x),2),
+                                                        N =length(x))),
+         c("Group", ""))
+means
 ```
 
 # Text
@@ -27,21 +38,21 @@ x
 ## Dependent variable distribution
 
 ```{r, comment='', fig.width=8, fig.height=4}
-dv<-strsplit(x$data.name, split = " by ")[[1]][1] # dependent variable
-iv<-strsplit(x$data.name, split = " by ")[[1]][2] # independent variable
 y<-as.data.frame(d[,dv])
 colnames(y)<-dv
 par(mfrow = c(1,2))
 shape(y) # histogramm and qqplot
-measure<-d[,dv]
-shapiro.test(measure)
+measure<-eval(parse(text = colnames(d[dv])))
+shapiro.test(eval(measure))
 # a<-paste0(deparse(substitute(d)),"$", dv)
 # w<-eval(parse(text = a))
 ```
 
-## Dependent variable distribution by group
-```{r,comment='', fig.width=8, fig.height=4}
+## Dependent variable distribution by independent group
+```{r,comment='', fig.width=8, fig.height=4, eval=show_text}
 d$iv<-as.factor(d[,iv])
+d$iv<-(droplevels(d[,iv]))
+d$dv<-d[,dv]
 par(mfrow = c(2,2))
 for(i in levels(d$iv)){
   sub_df<-as.data.frame(d[d$iv == i , dv])
@@ -51,22 +62,32 @@ for(i in levels(d$iv)){
   }
 ```
 
-## Variances and Variance ratio
-```{r}
-round(tapply(d[,dv], d[,iv], var),2)
-round(max(tapply(d[,dv], d[,iv], var)) / min(tapply(d[,dv], d[,iv], var)),2)
+## Variance ratio between independent groups
+```{r, eval=show_text}
+v<-setNames(aggregate(d[,dv], by = list(d[,iv]),function(x) c(var = round(var(x),2))),
+                   c("Group", "Variance"))
+v$Group<-as.character(v$Group)
+row3<- c("RATIO =", round(max(v$Variance) / min(v$Variance),2))
+rbind(v, row3)
 ```
 ## Test of heteroscedasticity
-```{r, comment=""}
+```{r, comment="",eval=show_text}
 formula <- as.formula(paste(dv, iv, sep = "~"))
 stats::fligner.test(formula, d)
 ```
-## Means
-```{r}
-round(tapply(d[,dv], d[,iv], mean),2)
+
+## Rapid plot
+
+```{r, comment=""}
+M = mean(d[,dv])
+boxplot(d[,dv],xlab = "", ylab = colnames(d[dv]))
+points(M,cex=1.5, pch = 21, col = "black", bg = "red")
+abline(h = 0, col="blue")
 ```
-## SD
-```{r}
-round(tapply(d[,dv], d[,iv], sd),2)
+
+```{r eval = show_text, comment=""}
+M = tapply(d$dv,d$iv,FUN = mean)
+plot(y = d$dv, x=d$iv, xlab = colnames(d[iv]), ylab = colnames(d[dv]))
+points(M,cex=1.5, pch = 21, col = "black", bg = "red")
 ```
 
