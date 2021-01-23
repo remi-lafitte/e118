@@ -15,11 +15,11 @@ library(afex)
 library(ggpubr)
 library(car)
 library(MESS)
-data("Ericksen")
-d<-Ericksen
-d$id<-seq(1:nrow(d))
-model<-lm(highschool ~ city + language,d)
-
+# data("Ericksen")
+# d<-Ericksen
+# d$id<-seq(1:nrow(d))
+# model<-lm(highschool ~ city + language,d)
+d<-data
 ```
 
 
@@ -75,9 +75,9 @@ influencePlot(model)
 ```{r}
 # wallyplot(model$lm)
 qqnorm.wally <- function(x, y, ...) { qqnorm(y, ...) ; abline(a=0, b=1) }
-par(ask=F)
-wallyplot(model, FUN=qqnorm.wally)
-wallyplot(model, FUN = residualplot)
-par(ask=T)
+
+wallyplot(model, FUN=qqnorm.wally, hide=FALSE)
+wallyplot(model, FUN = residualplot, hide = FALSE)
+
 ```
 

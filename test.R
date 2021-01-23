@@ -1,15 +1,13 @@
 #ANOVA--------------
-anova_report<-
+cool<-
   function(data,
            model,
            output = "html",
            open = F,
-           filename = ""){
+           test = "lm",
+           filename = test){
 
-    if(filename == ""){
-      filename<-"anova"
-    }
-    rmarkdown::render("anova.Rmd", output_format = paste0(output, "_document"),
+    rmarkdown::render(paste0(test,".Rmd"), output_format = paste0(output, "_document"),
                       output_file = filename)
     if(open == T){
       browseURL(here::here(paste0("anova.", output)))
@@ -18,10 +16,15 @@ anova_report<-
       system2("open","anova.docx")
     }
   }
-# data(iris)
-# iris$id<-seq(1:nrow(iris))
-# data<-iris
-# ano<-afex::aov_4(Sepal.Width ~ Species + (1|id),iris, factorize = T)
+
+data("Ericksen")
+d<-Ericksen
+d$id<-seq(1:nrow(d))
+model<-lm(highschool ~ city + language,d)
+
+cool(data = d, model = model, output = "word", open = T, filename = "23",
+     test = "lm")
+
 data("mtcars")
 d<-mtcars
 d$id<-seq(1:nrow(d))

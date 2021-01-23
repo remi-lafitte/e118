@@ -250,38 +250,24 @@ q1q3bis <-function(data, round= 2){
 # function that returns "(Q1; Q3)
 # EX  = q1q3(all$ben_angle_line1)
 
-tt_txt <- function(model, beta = T, unit = ""){
+tt_txt <- function(model, unit = ""){
   ttest<-model
-  # one sample t test
-
   q<-round(ttest$statistic,2)# statistic q
   dof<-round(ttest$parameter,2)# global degree of freedom
   pv<-p_txt(ttest$p.value)# raw p value. Beyond 10^-6, the round will give 0.
   b <- round(ttest$estimate[1] - ifelse(is.na(ttest$estimate[2]),0,ttest$estimate[2]),2)
   # estimation of the beta slope.
+  M<- paste("*M_diff* = ",b,unit, sep ="")
 
-  full<- paste(
-    ifelse(isTRUE(beta),
-           paste("*M* = ",b,unit, ", ", sep = ""), ""),
-    "95% CI [",round(ttest$conf.int[1],2),unit,", ",
-    round(ttest$conf.int[2],2),unit,"], *t*(",dof,") = ",q,", ",pv,
-    sep ="")
+  CI<- paste("95% CI [",round(ttest$conf.int[1],2),unit,", ",
+             round(ttest$conf.int[2],2),unit,"],", sep ="")
 
   small<- paste("*t*(",dof,") = ",q,", ",pv,
                 sep ="")
 
-  M<- paste("*M* = ",b,unit, sep ="")
-  CI<- paste("95% CI [",round(ttest$conf.int[1],2),unit,", ",
-             round(ttest$conf.int[2],2),unit,"],", sep ="")
-  CI_raw <- paste("[",round(ttest$conf.int[1],2),unit,", ",
-                  round(ttest$conf.int[2],2),unit,"],", sep ="")
-
-  M_CI <-paste(M, CI, sep= "")
-
-
-
-  return(list(full=full, small=small, M = M, CI = CI, M_CI = M_CI,
-              M_raw = b, CI_raw = CI_raw, p = pv))
+  full<- paste(M,CI, small, sep = ", ")
+  return(list(call = model$data.name, full=full, small=small, M = M, CI = CI,
+              p = pv))
 }
 # function that returns a t-test with APA style
 cor_txt <- function(model, data, spearman = F){
