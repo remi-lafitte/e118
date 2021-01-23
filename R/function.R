@@ -1,3 +1,25 @@
+lm_txt<- function(model){
+
+  par<-broom::glance(model)
+
+  txt<-
+    broom::tidy(model, conf.int = T, ddl = T) %>%
+    mutate_if(is.numeric, round, digits=2) %>%
+    group_by(term) %>%
+    mutate(p = p_txt(p.value)) %>%
+    mutate(t = paste("*t*(",par$df.residual,") = ",statistic, sep = "")) %>%
+    mutate(slope = paste("$B$ = ", estimate, sep = "")) %>%
+    mutate(slope_ci= paste("95% CI [",conf.low,", ",conf.high,"]", sep = "")) %>%
+    mutate(slope_full =  paste(slope,", ", slope_ci, sep = "")) %>%
+    mutate(full= paste(t,", ",p,", ", slope_full, sep = "")) %>%
+    mutate(small= paste(t,", ",p, sep = ""))
+  rownames(txt)<- txt$term
+  # list <- setNames(split(txt, seq(nrow(txt))), rownames(txt))
+  # txt<-txt[txt$Parameter == effect,]
+
+  return(txt)
+}
+
 aov4_txt<- function(model){
 
   pes<-

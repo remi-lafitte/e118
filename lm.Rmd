@@ -1,0 +1,83 @@
+---
+output:
+  word_document: default
+  html_document: default
+---
+# ANOVA
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, results = T, message = F, warning = F, comment = "")
+source(here::here("R", "function.R"))
+library(plyr)
+library(broom)
+library(dplyr)
+library(pander)
+library(afex)
+library(ggpubr)
+library(car)
+library(MESS)
+data("Ericksen")
+d<-Ericksen
+d$id<-seq(1:nrow(d))
+model<-lm(highschool ~ city + language,d)
+
+```
+
+
+```{r, include=F}
+x<- model # the second unknown parameter
+# show_text <- grepl("Two",x$method, fixed =F)
+```
+
+# R output
+```{r, comment=""}
+pander::pander(x)
+# dv<-strsplit(x$data.name, split = " by ")[[1]][1] # dependent variable
+# iv<-strsplit(x$data.name, split = " by ")[[1]][2] # independent variable
+```
+
+# Text
+
+
+```{r, results="asis"}
+y<-lm_txt(x)
+for (v in row.names(y)){
+  # Add some text
+  cat(v, ": **", y[v,]$full, "**",  sep="")  
+  cat("  \n")  
+
+  # Create plots.....
+
+  # insert page break
+  cat("\n")
+  cat("#####\n")
+  cat("\n")
+
+}
+
+```
+
+
+# Assumptions
+
+```{r}
+# https://stats.stackexchange.com/questions/19227/possible-extensions-to-the-default-diagnostic-plots-for-lm-in-r-and-in-general
+residualPlots(model)
+qqPlot(model)
+spreadLevelPlot(model)
+influenceIndexPlot(model)
+influencePlot(model)
+
+# avPlots(model$lm)
+
+```
+
+# Wally plots
+```{r}
+# wallyplot(model$lm)
+qqnorm.wally <- function(x, y, ...) { qqnorm(y, ...) ; abline(a=0, b=1) }
+par(ask=F)
+wallyplot(model, FUN=qqnorm.wally)
+wallyplot(model, FUN = residualplot)
+par(ask=T)
+```
+

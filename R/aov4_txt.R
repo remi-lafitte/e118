@@ -18,9 +18,9 @@
 #' model<-afex::aov_4(a1~ b * c + (1|ID),z) # between-subject design
 #' result<-aov4_txt(model = model)
 #' result$c$full
-emmeans(model, ~ b * c)
-model$lm$coefficients
-View(model)
+# emmeans(model, ~ b * c)
+# model$lm$coefficients
+# View(model)
 
 aov4_txt<- function(model){
 
@@ -49,12 +49,12 @@ aov4_txt<- function(model){
       mutate(pes_full =  paste(pes,", ", pes_ci, sep = "")) %>%
       mutate(full= paste(F,", ",p,", ", ges,", ", pes,", ", pes_ci, sep = "")) %>%
       mutate(small= paste(F,", ",p, sep = ""))
-#
-     rownames(txt)<- txt$Parameter
-     list <- setNames(split(txt, seq(nrow(txt))), rownames(txt))
-     # txt<-txt[txt$Parameter == effect,]
 
-    return(list(txt  = list))
+    rownames(txt)<- txt$Parameter
+    # list <- setNames(split(txt, seq(nrow(txt))), rownames(txt))
+    # txt<-txt[txt$Parameter == effect,]
+
+    return(txt)
 }
 
 # https://csrgxtu.github.io/2015/03/20/Writing-Mathematic-Fomulars-in-Markdown/
