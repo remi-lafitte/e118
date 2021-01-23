@@ -1,3 +1,39 @@
+aov4_txt<- function(model){
+
+  pes<-
+    effectsize::eta_squared(model, partial = TRUE, ci = 0.9) %>%
+    data.frame %>%
+    mutate_if(is.numeric, round, digits=3)
+
+
+  table<-
+    model$anova_table %>%
+    data.frame %>%
+    mutate(Parameter = rownames(.))%>%
+    mutate_if(is.numeric, round, digits=2) %>%
+    inner_join(., pes, by = "Parameter")
+
+
+  txt<-
+    table %>%
+    dplyr::group_by(Parameter) %>%
+    mutate(p = p_txt(Pr..F.)) %>%
+    mutate(F = paste("*F*(",num.Df, ", ",den.Df,") = ",F, sep = "")) %>%
+    mutate(ges = paste("$\\hat{\\eta}^2_G$ = ",round(ges,2))) %>%
+    mutate(pes = paste("$\\hat{\\eta}^2_p$ = ",round(Eta_Sq_partial,2))) %>%
+    mutate(pes_ci =  paste("95% CI [",round(CI_low,2),", ",round(CI_high,2),"]", sep = "")) %>%
+    mutate(pes_full =  paste(pes,", ", pes_ci, sep = "")) %>%
+    mutate(full= paste(F,", ",p,", ", ges,", ", pes,", ", pes_ci, sep = "")) %>%
+    mutate(small= paste(F,", ",p, sep = ""))
+   rownames(txt)<- txt$Parameter
+  # list <- setNames(split(txt, seq(nrow(txt))), rownames(txt))
+  # txt<-txt[txt$Parameter == effect,]
+
+  return(txt)
+}
+
+
+
 nozero<-function(x){sub("^(-?)0.", "\\1.", sprintf("%.2f", x))}
 
 
@@ -23,7 +59,7 @@ col.desat <- function( acol , amt=0.5 ) {
 }
 rangi2 <- col.desat("blue",0.5)# a beautiful color
 
-percent <-function(number, dec = 0){ 
+percent <-function(number, dec = 0){
   percentage<-paste(round(number*100,dec),"%",sep = "")
   return(percentage)
 }
@@ -43,7 +79,7 @@ qqplot <- function(x, data, ...) {
 }
 histplot <- function(x, data, ...) {
   hist(data[[x]], main = names(data)[x], ...)
-} 
+}
 
 shape <- function(data){
 x<-data
@@ -57,17 +93,17 @@ l_ply(seq_len(ncol(x)),c(histplot, qqplot), data = x)
 
 plot_corr<-function(data, rowx, list_corr){
   ls<-list_corr[rowx,]
-  v1<-ls$var1 
+  v1<-ls$var1
   v2<-ls$var2
   b<-ls$coef
   ci<-ls$ci
-  ggplot(data = d) + aes_string(x = v2, y=v1)+ 
+  ggplot(data = d) + aes_string(x = v2, y=v1)+
     feat+
     geom_point(col = ls$col, alpha = .4, size  = 5) +
-    labs(y = ls$lab1, x = ls$lab2) + 
-    annotate("text", x = x_cor, y = y_cor, 
+    labs(y = ls$lab1, x = ls$lab2) +
+    annotate("text", x = x_cor, y = y_cor,
              label = bquote(italic(r)~ "=" ~.(b)~","~.(ci)),size = 5)+
-    annotate("text", x = x_p, y = y_p, 
+    annotate("text", x = x_p, y = y_p,
              label =p_plot(ls$p_bon),size = 5)
 }
 
@@ -75,11 +111,11 @@ rho_txt <- function(model){
   cor<-model
   b<-round(cor$estimate,2) # estimation of the beta slope.
   pv<-p_txt(cor$p.value)# raw p value. Beyond 10^-6, the round will give 0.
-  
+
   small<- paste("*r*~s~ =", b,", ",pv, sep = "")
-  
+
   return(list(small=small))
-  
+
 }
 
 # spearman(d, "total_score", "total_tilt")
@@ -87,25 +123,25 @@ rho_txt <- function(model){
 
 # p_txt<-function(p){
 #   library(latex2exp)
-#   a = 'p < '  
-#   b = 'p = '  
+#   a = 'p < '
+#   b = 'p = '
 #   p <- ifelse(is.character(p), as.numeric(p), p)
 #   p2 <-round(p, 2)
 #   p3 <- round(p, 3)
 #   pc2 <- as.character(p2)
 #   pc3 <- as.character(p3)
-#   
+#
 #   pv<-
 #     ifelse(p < 0.000001,
 #            "$$\\{p < } 10^{-6}$$",
-#            ifelse(p < .00001, 
+#            ifelse(p < .00001,
 #               "$$\\{p < } 10^{-5}$$",
-#                   ifelse(p < .0001, 
+#                   ifelse(p < .0001,
 #                   "$$\\{p < } 10^{-4}$$",
-#                          ifelse(p < .001, 
+#                          ifelse(p < .001,
 #                            "$$\\textit{p < } 0.001$$",
-#                                 ifelse(p < .05, 
-#                                        paste("*p* < ", p, sep = ""), 
+#                                 ifelse(p < .05,
+#                                        paste("*p* < ", p, sep = ""),
 #                                        paste("*p* = ", p, sep = ""))))))
 #   inline<-pv
 #   return(inline)
@@ -131,7 +167,7 @@ p_txt<-function(p){
                                   ifelse(p < .05,
                                        paste("*p* < ", nozero(p3), sep = ""),
                                         paste("*p* = ", nozero(p2), sep = "")))))))
-  
+
   return(pv)
 }
 # p_txt(0.555)
@@ -159,33 +195,33 @@ p_plot<-function(p){
                                               nozero(p3))),
                                               parse(text= paste0("italic(p)~'='~",
                                                                  nozero(p2)))))))))
-  
+
   return(pv)
 }
 
 # p_plot(0.2)
-q2q1q3 <-function(data, dec = 2){  
+q2q1q3 <-function(data, dec = 2){
   # dec is round value
-  x<-quantile(data, probs = c(0.5, 0.25, 0.75), na.rm = TRUE) 
-  y<-paste(round(x[1],dec), " (",round(x[2],dec), "; ", 
+  x<-quantile(data, probs = c(0.5, 0.25, 0.75), na.rm = TRUE)
+  y<-paste(round(x[1],dec), " (",round(x[2],dec), "; ",
                round(x[3],dec), ")", sep = "")
   return(y)
 }
 # function that returns "Q2 (Q1; Q3)"
 # EX  = q2q1q3(xxx)
 
-q1q3 <-function(data, round= 2){  
-  q1_q3<-quantile(data, probs = c(0.25, 0.75), na.rm = TRUE) 
-  q1_q3<-paste("(",round(q1_q3[1],round), "; ", 
+q1q3 <-function(data, round= 2){
+  q1_q3<-quantile(data, probs = c(0.25, 0.75), na.rm = TRUE)
+  q1_q3<-paste("(",round(q1_q3[1],round), "; ",
                round(q1_q3[2],round), ")", sep = "")
   return(q1_q3)
 }
 # function that returns "(Q1; Q3)
 # EX  = q1q3(all$ben_angle_line1)
 
-q1q3bis <-function(data, round= 2){  
-  q1_q3<-quantile(data, probs = c(0.25, 0.75), na.rm = TRUE) 
-  q1_q3<-paste("[",round(q1_q3[1],round), "; ", 
+q1q3bis <-function(data, round= 2){
+  q1_q3<-quantile(data, probs = c(0.25, 0.75), na.rm = TRUE)
+  q1_q3<-paste("[",round(q1_q3[1],round), "; ",
                round(q1_q3[2],round), "]", sep = "")
   return(q1_q3)
 }
@@ -195,33 +231,33 @@ q1q3bis <-function(data, round= 2){
 tt_txt <- function(model, beta = T, unit = ""){
   ttest<-model
   # one sample t test
-  
+
   q<-round(ttest$statistic,2)# statistic q
   dof<-round(ttest$parameter,2)# global degree of freedom
   pv<-p_txt(ttest$p.value)# raw p value. Beyond 10^-6, the round will give 0.
   b <- round(ttest$estimate[1] - ifelse(is.na(ttest$estimate[2]),0,ttest$estimate[2]),2)
   # estimation of the beta slope.
-  
+
   full<- paste(
     ifelse(isTRUE(beta),
            paste("*M* = ",b,unit, ", ", sep = ""), ""),
     "95% CI [",round(ttest$conf.int[1],2),unit,", ",
     round(ttest$conf.int[2],2),unit,"], *t*(",dof,") = ",q,", ",pv,
     sep ="")
-  
+
   small<- paste("*t*(",dof,") = ",q,", ",pv,
                 sep ="")
-  
+
   M<- paste("*M* = ",b,unit, sep ="")
   CI<- paste("95% CI [",round(ttest$conf.int[1],2),unit,", ",
              round(ttest$conf.int[2],2),unit,"],", sep ="")
   CI_raw <- paste("[",round(ttest$conf.int[1],2),unit,", ",
                   round(ttest$conf.int[2],2),unit,"],", sep ="")
-  
+
   M_CI <-paste(M, CI, sep= "")
-  
-  
-  
+
+
+
   return(list(full=full, small=small, M = M, CI = CI, M_CI = M_CI,
               M_raw = b, CI_raw = CI_raw, p = pv))
 }
@@ -236,16 +272,16 @@ cor_txt <- function(model, data, spearman = F){
   pv<-p_txt(cor$p.value)# raw p value. Beyond 10^-6, the round will give 0.
   ll<- if(!is.null(cor$conf.int)){nozero(round(cor$conf.int[1],2))}
   ul<- if(!is.null(cor$conf.int)){nozero(round(cor$conf.int[2],2))}
-  
+
   var1<-strsplit(cor$data.name, "$",fixed=TRUE)[[1]][3]
   var02<-strsplit(cor$data.name, "$",fixed=TRUE)[[1]][2]
   var2 <-strsplit(var02, " ",fixed=TRUE)[[1]][1]
   var<-paste(var1, " ~ ", var2, sep = "")
- 
+
   library(DescTools)
   ll<-
     if(spearman==T) {
-        nozero(round(SpearmanRho(data[,var1], y = data[,var2], use = "complete.obs", 
+        nozero(round(SpearmanRho(data[,var1], y = data[,var2], use = "complete.obs",
                                 conf.level = 0.95)[1],2))
     } else {
         ll
@@ -253,13 +289,13 @@ cor_txt <- function(model, data, spearman = F){
 
   ul<-
     if(spearman==T) {
-      nozero(round(SpearmanRho(data[,var1], y = data[,var2], use = "complete.obs", 
+      nozero(round(SpearmanRho(data[,var1], y = data[,var2], use = "complete.obs",
                         conf.level = 0.95)[2],2))
     } else {
       ul
     }
 
-  
+
   full<- paste("*r* = ",coef,", 95% CI [",ll,"; ", ul,"], ",pv,"",sep ="")
   medium<- paste("*r* = ",coef,", 95% CI [",ll,"; ", ul,"]",sep ="")
   small<- paste("*r* = ",coef,", ",pv,sep ="")
@@ -270,13 +306,13 @@ cor_txt <- function(model, data, spearman = F){
   lab2<-attributes(data[,var2])$label
   labs<-paste(lab1, " ~ ", lab2, sep = "")
 
-  
+
   return(list(full=full, medium = medium, small=small, p = pv,
               p_raw =cor$p.value, corr = b,ci =ci,coef=coef,
               labels = labs, var = var,
-              var1 = var1, 
+              var1 = var1,
               var2 = var2, lab1 = lab1, lab2 = lab2))
-  
+
 }
 # function that returns a Pearson correlation with APA style
 
@@ -310,7 +346,7 @@ or<-function(matrix){
   txt<-paste("OR = ", round(or,2), ", ","95% CI [",round(lower,2),",",round(upper,2),"]", sep="")
   txt_ci<-paste("95% CI [",round(lower,2),", ",round(upper,2),"]", sep="")
   txt_ci2<-paste("[",round(lower,2),", ",round(upper,2),"]", sep="")
-  return(list(or = round(or,2), lower_ci = round(lower,2), 
+  return(list(or = round(or,2), lower_ci = round(lower,2),
               upper_ci = round(upper,2), txt = txt, txt_ci=txt_ci,
               txt_ci2=txt_ci2))
 }
@@ -320,21 +356,21 @@ out <- function(model, data, cook = 4, hat=3, intercept = FALSE){
 # model<-lm(vv_tilt ~ bdn_score_c, d)
   data$id<-seq(1:nrow(data))
   cutoff_cook <- cook/((nrow(data)-length(model$coefficients)-2))
-  df_cook<-data[which(cooks.distance(model) > cutoff_cook),] %>% 
-    as_tibble() %>% 
+  df_cook<-data[which(cooks.distance(model) > cutoff_cook),] %>%
+    as_tibble() %>%
     mutate(tool = "cookd")
-  
+
   cutoff_hat <- mean(hatvalues(model)) * hat
-  df_hat<-data[which(hatvalues(model) > cutoff_hat),] %>% 
-    as_tibble() %>% 
+  df_hat<-data[which(hatvalues(model) > cutoff_hat),] %>%
+    as_tibble() %>%
     mutate(tool = "hat")
-  
-  n = nrow(data) 
-  cutoff_sdr = qt(1 - 0.05 / (2*n), (n - 4)) 
-  df_sdr<-data[which(abs(rstudent(model)) > cutoff_sdr),] %>% 
-    as_tibble() %>% 
+
+  n = nrow(data)
+  cutoff_sdr = qt(1 - 0.05 / (2*n), (n - 4))
+  df_sdr<-data[which(abs(rstudent(model)) > cutoff_sdr),] %>%
+    as_tibble() %>%
     mutate(tool = "sdr")
-  
+
   # plot 1
   multi_plot<-autoplot(model)
   p1<-multi_plot[2]+
@@ -343,18 +379,18 @@ out <- function(model, data, cook = 4, hat=3, intercept = FALSE){
   p2<-multi_plot[1]+
     theme_bw(base_size=10)
   # plot 3 = d of cook
-  p3<-cooks.distance(model) %>% 
-    as_tibble() %>% rownames_to_column("id") %>% 
+  p3<-cooks.distance(model) %>%
+    as_tibble() %>% rownames_to_column("id") %>%
     ggplot()+aes(x=value, y = id, label=id)+
     labs(y =NULL)+guides(y = "none")+
     geom_label(size = 2, col = "blue")+
     theme_bw(base_size = 10)+
-    geom_vline(xintercept = cutoff_cook, 
+    geom_vline(xintercept = cutoff_cook,
                lty="dashed", col="red",size=1)+
     labs(x = "Cook D", y ="Participant")
   # plot 4 = hat value
-  p4<-hatvalues(model) %>% 
-    as_tibble() %>% rownames_to_column("id") %>% 
+  p4<-hatvalues(model) %>%
+    as_tibble() %>% rownames_to_column("id") %>%
     ggplot()+aes(x=value, y = id, label=id)+
     geom_label(size = 2, col = "blue")+
     labs(y =NULL)+guides(y = "none")+
@@ -362,44 +398,44 @@ out <- function(model, data, cook = 4, hat=3, intercept = FALSE){
     geom_vline(xintercept = cutoff_hat, lty="dashed", col="red",size=1)+
     labs(x = "Leverage", y ="Participant")
   # plot 5 = SDR
-  p5<- rstudent(model) %>% 
-    as_tibble() %>% rownames_to_column("id") %>% 
+  p5<- rstudent(model) %>%
+    as_tibble() %>% rownames_to_column("id") %>%
     ggplot()+aes(x=value, y = id, label=id)+
     geom_label(size = 2, col = "blue")+
     labs(y =NULL)+guides(y = "none")+
     theme_bw(base_size = 10)+
     geom_vline(xintercept = c(-cutoff_sdr,cutoff_sdr), lty="dashed", col="red",size=1)+
     labs(x = "R Student", y ="Participant")
-  
-  
+
+
   #p_out <- recordPlot()
-  outlier_name <- 
+  outlier_name <-
     bind_rows(df_cook, df_hat, df_sdr) %>% # list of outliers
     select(id) %>% unique()
 
-  data_no_outlier <- data %>% 
+  data_no_outlier <- data %>%
     dplyr::filter(!id %in% outlier_name$id)
   old_model<-model
   new_model <- update(model,data=data_no_outlier)
   coeff<-bind_rows(tidy(old_model, conf.int = T) %>% mutate(model = "old"),
                    tidy(new_model,conf.int = T) %>% mutate(model = "new"))
-  
+
   coeff<-
     if(intercept == FALSE){coeff[-c(1,3),]}
-  
-  p6<-ggplot(data = coeff, 
-             aes(x = term, y = estimate,  
+
+  p6<-ggplot(data = coeff,
+             aes(x = term, y = estimate,
                  ymin = conf.low, ymax = conf.high, col = model)) +
     geom_point(size = 2, position = position_dodge(0.2)) +
     geom_errorbar(width = 0.01,  position = position_dodge(0.2)) +
     geom_hline(yintercept = 0, lty = "dashed",size=1,col="red") +
-    coord_flip()+ 
-    labs(x ="" , y = paste("Estimate\nOut=",paste0(outlier_name$id, collapse = ";")))+ 
-    scale_color_discrete(name = "Model", 
+    coord_flip()+
+    labs(x ="" , y = paste("Estimate\nOut=",paste0(outlier_name$id, collapse = ";")))+
+    scale_color_discrete(name = "Model",
                          labels = c("New", "Old"))+
     theme_bw(base_size=10)
   plot<-p1+p2+p3+p4+p5+p6
-  
-  return(list(plot=plot,outlier = outlier_name, 
+
+  return(list(plot=plot,outlier = outlier_name,
               new_data = data_no_outlier, coeff=coeff))
 }

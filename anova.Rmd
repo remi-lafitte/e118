@@ -1,5 +1,7 @@
 ---
-output: html_document
+output:
+  html_document: default
+  word_document: default
 ---
 # ANOVA
 ```{r setup, include=FALSE}
@@ -7,28 +9,125 @@ knitr::opts_chunk$set(echo = F, results = T, message = F, warning = F, comment =
 source(here::here("R", "function.R"))
 library(plyr)
 library(dplyr)
-data("mtcars")
+library(afex)
+library(ggpubr)
+library(car)
+library(MESS)
+data("Ericksen")
+d<-Ericksen
+d$id<-seq(1:nrow(d))
+d$language<-as.numeric(d$language)
+model<-afex::aov_4(highschool ~ city + language+  (1|id),d, factorize = F)
+# model<-afex::aov_ez(id = "id", dv = "highschool",
+#                     data = d, covariate = "language", between = "city",
+#                     factorize = F)
 ```
 
+
 ```{r, include=F}
-d<-data # the first unknown parameter
 x<- model # the second unknown parameter
 # show_text <- grepl("Two",x$method, fixed =F)
 ```
 
 # R output
 ```{r, comment=""}
-x$Anova
+x$anova_table
 # dv<-strsplit(x$data.name, split = " by ")[[1]][1] # dependent variable
 # iv<-strsplit(x$data.name, split = " by ")[[1]][2] # independent variable
 ```
 
-```{r, comment="", error=T}
-# var<-rownames(x$Anova[c(-1, -(length(x$Anova)-1)),])
-# emmeans::emmeans(x, var)
+# Text
+
+```{r}
+y<-aov4_txt(x)
 ```
 
-# Text
-`r aov4_txt(model)$html`
+```{r, results="asis"}
+for (v in row.names(y)){
+  # Add some text
+  cat(v, ": **", y[v,]$full, "**",  sep="")  
+  cat("  \n")  
 
-`r aov4_txt(model)$docx`
+  # Create plots.....
+
+  # insert page break
+  cat("\n")
+  cat("#####\n")
+  cat("\n")
+
+}
+
+```
+
+
+# Description
+```{r}
+col<-colnames(model$data$long[,-1])
+n<-length(col)
+dv<-col[n]
+iv<-gsub(":", "+", row.names(y))
+for(v in iv){
+means<-tapply(d[,dv], d[,v], mean)
+variance<-tapply(d[,dv], d[,v], var)
+#  p<-ggqqplot(d, dv, facet.by = v)+
+#   labs(title = v)
+cat("Means", sep = "\n")
+print(round(means,2))
+cat("Variances",sep = "\n")
+print(round(variance,2))
+}
+
+```
+
+
+
+
+# Assumptions
+
+```{r}
+# https://stats.stackexchange.com/questions/19227/possible-extensions-to-the-default-diagnostic-plots-for-lm-in-r-and-in-general
+residualPlots(model$lm)
+qqPlot(model$lm)
+spreadLevelPlot(model$lm)
+influenceIndexPlot(model$lm)
+influencePlot(model$lm)
+
+# avPlots(model$lm)
+
+```
+
+
+
+
+# Wally plots
+```{r, message=F}
+# wallyplot(model$lm)
+qqnorm.wally <- function(x, y, ...) { qqnorm(y, ...) ; abline(a=0, b=1) }
+wallyplot(model$lm, FUN=qqnorm.wally)
+wallyplot(model$lm, FUN = residualplot)
+```
+
+
+
+```{r draft cat, results="asis", eval = F}
+for (var in LETTERS[1:6]){
+  # Add some text
+  cat("Variable: **", paste(var), "**",  sep="")  
+  cat("  \n")  
+  cat("More Text")    
+  cat("  \n")  
+  cat("Even more text")  
+  cat("  \n")
+
+  # Create plots.....
+
+  # insert page break
+  cat("\n")
+  cat("#####\n")
+  cat("\n")
+
+
+}
+
+```
+
