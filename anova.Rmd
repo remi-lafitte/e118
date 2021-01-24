@@ -21,8 +21,7 @@ d<-data
 # d$language<-as.numeric(d$language)
 # model<-afex::aov_4(highschool ~ city + language+  (1|id),d, factorize = F)
 # model<-afex::aov_ez(id = "id", dv = "highschool",
-#                     data = d, covariate = "language", between = "city",
-#                     factorize = F)
+#                     data = d, covariate = "language", between = "city", factorize = F)
 ```
 
 
@@ -35,6 +34,7 @@ x<- model # the second unknown parameter
 x$anova_table
 # dv<-strsplit(x$data.name, split = " by ")[[1]][1] # dependent variable
 # iv<-strsplit(x$data.name, split = " by ")[[1]][2] # independent variable
+summary(x)
 ```
 
 # Text
@@ -62,20 +62,27 @@ for (v in row.names(y)){
 
 
 # Description
-```{r}
-col<-colnames(model$data$long[,-1])
+```{r, error = T}
+col<-colnames(x$data$long[,-1])
 n<-length(col)
 dv<-col[n]
 iv<-gsub(":", "+", row.names(y))
+# interaction(f1, f2) 
 for(v in iv){
-means<-tapply(d[,dv], d[,v], mean)
-variance<-tapply(d[,dv], d[,v], var)
-#  p<-ggqqplot(d, dv, facet.by = v)+
-#   labs(title = v)
-cat("Means", sep = "\n")
-print(round(means,2))
-cat("Variances",sep = "\n")
-print(round(variance,2))
+# attach(d)
+# w<-eval(parse(text = v))
+# z<-eval(parse(text = dv))
+
+formu<-as.formula(paste0(dv, "~", v))
+moy<-aggregate(formu, data = d, FUN = function (x) (round(mean(x),2)))
+vari<-aggregate(formu, data = d, FUN = function (x) (round(var(x),2)))
+
+# means<-tapply(d[,dv], d[,v], mean)
+# variance<-tapply(d[,dv], d[,v], var)
+cat(paste(v, "Means", sep = "-"), sep = "\n")
+print(moy)
+cat(paste(v, "Variances", sep = "-"),sep = "\n")
+print(vari)
 }
 
 ```
@@ -85,7 +92,7 @@ print(round(variance,2))
 
 # Assumptions
 
-```{r}
+```{r, error = T}
 # https://stats.stackexchange.com/questions/19227/possible-extensions-to-the-default-diagnostic-plots-for-lm-in-r-and-in-general
 residualPlots(model$lm)
 qqPlot(model$lm)
@@ -101,7 +108,7 @@ influencePlot(model$lm)
 
 
 # Wally plots
-```{r, message=F}
+```{r, message=F, error = T}
 # wallyplot(model$lm)
 qqnorm.wally <- function(x, y, ...) { qqnorm(y, ...) ; abline(a=0, b=1) }
 wallyplot(model$lm, FUN=qqnorm.wally, hide = F)

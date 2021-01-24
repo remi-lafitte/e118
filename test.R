@@ -22,8 +22,8 @@ d<-Ericksen
 d$id<-seq(1:nrow(d))
 model<-lm(highschool ~ city + language,d)
 
-cool(data = d, model = model, output = "word", open = T, filename = "23",
-     test = "lm")
+cool(data = data, model = model2, open = T,
+     test = "anova")
 
 data("mtcars")
 d<-mtcars

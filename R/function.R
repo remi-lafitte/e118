@@ -1,3 +1,22 @@
+wtf_is <- function(x) {
+  # For when you have no idea what something is.
+  # https://stackoverflow.com/questions/8855589
+  cat("1. typeof():\n")
+  print(typeof(x))
+  cat("\n2. class():\n")
+  print(class(x))
+  cat("\n3. mode():\n")
+  print(mode(x))
+  cat("\n4. names():\n")
+  print(names(x))
+  cat("\n5. slotNames():\n")
+  print(slotNames(x))
+  cat("\n6. attributes():\n")
+  print(attributes(x))
+  cat("\n7. str():\n")
+  print(str(x))
+}
+
 lm_txt<- function(model){
 
   par<-broom::glance(model)
@@ -447,3 +466,4 @@ out <- function(model, data, cook = 4, hat=3, intercept = FALSE){
   return(list(plot=plot,outlier = outlier_name,
               new_data = data_no_outlier, coeff=coeff))
 }
+
