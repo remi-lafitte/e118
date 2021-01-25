@@ -1,19 +1,22 @@
 #ANOVA--------------
+library(tidyverse)
+library(car)
+
 cool<-
   function(data,
            model,
-           output = "html",
+           output,
            open = F,
-           test = "lm",
-           filename = test){
+           test,
+           filename = "x"){
 
     rmarkdown::render(paste0(test,".Rmd"), output_format = paste0(output, "_document"),
                       output_file = filename)
     if(open == T){
-      browseURL(here::here(paste0("anova.", output)))
+      browseURL(here::here(paste0(filename, "_", output)))
     }
     if(open == T & output == "word"){
-      system2("open","anova.docx")
+      system2("open",paste0(filename, ".docx"))
     }
   }
 
@@ -22,8 +25,7 @@ d<-Ericksen
 d$id<-seq(1:nrow(d))
 model<-lm(highschool ~ city + language,d)
 
-cool(data = data, model = model2, open = T,
-     test = "anova")
+cool(data = data, model = model, open = T,output = "word", filename = "zoe")
 
 data("mtcars")
 d<-mtcars
